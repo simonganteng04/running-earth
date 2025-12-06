@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Checkout – RunningEarth</title>
+</head>
+<body bgcolor="#f4f0e8" text="#5a4f42" link="#7a6b5a" vlink="#6b5e50" alink="#8a7a65">
+
+  <!-- Header -->
+  <table width="100%" bgcolor="#e8e0d0" cellpadding="12" cellspacing="0" border="0">
+    <tr>
+      <td width="70%">
+        <font face="Arial" size="5" color="#5a4f42"><b>Running<font color="#8a7a65">Earth</font></b></font>
+      </td>
+      <td width="30%" align="right">
+        <font face="Arial" size="3">
+          <a href="index.html">Kembali ke Beranda</a>
+        </font>
+      </td>
+    </tr>
+  </table>
+
+  <!-- Marquee -->
+  <marquee behavior="scroll" direction="left" bgcolor="#dfd6c6" height="30">
+    🔒 Data Anda aman. Kami tidak menyimpan informasi pembayaran.
+  </marquee>
+
+  <!-- Main Layout -->
+  <table width="100%" cellpadding="15" cellspacing="0" border="0">
+    <tr>
+      <!-- Sidebar -->
+      <td width="20%" valign="top" bgcolor="#e8e0d0" style="padding:12px;">
+        <font face="Arial" size="3" color="#5a4f42"><b>Panduan</b></font><br><br>
+        <font face="Arial" size="2">
+          1. Isi data lengkap<br>
+          2. Pilih kurir & metode bayar<br>
+          3. Konfirmasi pesanan
+        </font>
+      </td>
+
+      <!-- Form Transaksi -->
+      <td width="80%" valign="top" style="padding:15px;">
+        <font face="Arial" size="5" color="#5a4f42"><b>Form Transaksi</b></font><br><br>
+
+        <form>
+          <table cellpadding="8" cellspacing="0" border="0">
+            <tr>
+              <td><font face="Arial" size="3">Nama Lengkap</font></td>
+              <td><input type="text" size="40" required></td>
+            </tr>
+            <tr>
+              <td><font face="Arial" size="3">Email</font></td>
+              <td><input type="email" size="40" required></td>
+            </tr>
+            <tr>
+              <td><font face="Arial" size="3">No. Telepon</font></td>
+              <td><input type="tel" size="40" required></td>
+            </tr>
+            <tr>
+              <td valign="top"><font face="Arial" size="3">Alamat Pengiriman</font></td>
+              <td><textarea rows="3" cols="42" required></textarea></td>
+            </tr>
+            <tr>
+              <td><font face="Arial" size="3">Kurir Pengiriman</font></td>
+              <td>
+                <select required>
+                  <option value="">-- Pilih --</option>
+                  <option>JNE</option>
+                  <option>SiCepat</option>
+                  <option>AnterAja</option>
+                  <option>GrabExpress</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td><font face="Arial" size="3">Metode Pembayaran</font></td>
+              <td>
+                <select required>
+                  <option value="">-- Pilih --</option>
+                  <option>Transfer Bank (BCA/BNI/Mandiri)</option>
+                  <option>OVO</option>
+                  <option>GoPay</option>
+                  <option>ShopeePay</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2" style="padding-top:15px;">
+                <input type="submit" value="Kirim Pesanan">
+                &nbsp;
+                <a href="index.html">Batal</a>
+              </td>
+            </tr>
+          </table>
+        </form>
+      </td>
+    </tr>
+  </table>
+
+  <!-- Footer -->
+  <table width="100%" bgcolor="#dfd6c6" cellpadding="10" cellspacing="0" border="0">
+    <tr>
+      <td align="center">
+        <font face="Arial" size="2" color="#5a4f42">
+          &copy; 2025 RunningEarth.
+        </font>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
