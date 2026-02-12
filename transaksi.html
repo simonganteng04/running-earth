@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Checkout – RunningEarth</title>
+  
+  <script>
+    // --- Variabel Global (Default jika dibuka langsung) ---
+    var g_produk = "Produk Belum Dipilih";
+    var g_harga = 0;
+    var g_qty = 1;
+    var g_size = "-";
+    var g_total = 0;
+    var g_ongkir = 25000; // Ongkir flat rate
+
+    // 1. Fungsi saat halaman dimuat (Ambil data dari Link/URL)
+    function muatDataPesanan() {
+      const params = new URLSearchParams(window.location.search);
+      
+      // Ambil data jika ada kiriman dari halaman detail
+      if(params.has('produk')) {
+        g_produk = params.get('produk');
+        g_harga = parseInt(params.get('harga'));
+        g_qty = parseInt(params.get('qty'));
+        g_size = params.get('size');
+      } 
+
+      // Hitung Subtotal dan Total
+      var subtotal = g_harga * g_qty;
+      g_total = subtotal + g_ongkir;
+
+      // Tampilkan data di Sidebar (Ringkasan Pesanan)
+      // Menggunakan try-catch agar jika error tidak membuat halaman blank
+      try {
+        document.getElementById('txtProduk').innerText = g_produk;
+        document.getElementById('txtSize').innerText = g_size;
+        document.getElementById('txtQty').innerText = g_qty + " pasang";
+        document.getElementById('txtHarga').innerText = formatRupiah(g_harga);
+        document.getElementById('txtSubtotal').innerText = formatRupiah(subtotal);
+        document.getElementById('txtTotalBayar').innerText = formatRupiah(g_total);
+      } catch(e) {
+        console.log("Error menampilkan data awal: " + e);
+      }
+    }
+
+    // 2. Fungsi Cetak Invoice (Dipanggil saat tombol Bayar ditekan)
+    function cetakInvoice() {
+      // Ambil data input form
+      var nama = document.getElementById("inputNama").value;
+      var email = document.getElementById("inputEmail").value;
+      var hp = document.getElementById("inputHp").value;
+      var alamat = document.getElementById("inputAlamat").value;
+      var kurir = document.getElementById("inputKurir").value;
+      var bayar = document.getElementById("inputBayar").value;
+
+      // Validasi Input
+      if(nama == "" || email == "" || alamat == "") {
+        alert("Mohon lengkapi Nama, Email, dan Alamat Anda!");
+        return;
+      }
+
+      // --- ISI DATA KE BAGIAN INVOICE ---
+      
+      // 1. Info Pembeli
+      document.getElementById("strukNama").innerText = nama;
+      document.getElementById("strukEmail").innerText = email;
+      document.getElementById("strukHp").innerText = hp;
+      document.getElementById("strukAlamat").innerText = alamat;
+      document.getElementById("strukKurir").innerText = kurir;
+      document.getElementById("strukBayar").innerText = bayar;
+      
+      // 2. Info Produk
+      document.getElementById("invProduk").innerText = g_produk;
+      document.getElementById("invSize").innerText = "Size " + g_size;
+      document.getElementById("invQty").innerText = g_qty;
+      document.getElementById("invHargaSatuan").innerText = formatRupiah(g_harga);
+      
+      // [PENTING] Menampilkan Total Harga Barang (Harga x Qty)
+      var totalBarang = g_harga * g_qty;
+      document.getElementById("invTotalItem").innerText = formatRupiah(totalBarang);
+
+      // 3. Info Biaya Akhir
+      document.getElementById("invOngkir").innerText = formatRupiah(g_ongkir);
+      document.getElementById("invTotalFinal").innerText = formatRupiah(g_total);
+
+      // 4. Info Tanggal & No Invoice
+      var today = new Date();
+      document.getElementById("strukTgl").innerText = today.toLocaleDateString("id-ID");
+      document.getElementById("strukNo").innerText = "INV-" + Math.floor(Math.random() * 90000 + 10000);
+
+      // --- GANTI TAMPILAN ---
+      document.getElementById("areaForm").style.display = "none";     // Sembunyikan Form
+      document.getElementById("areaInvoice").style.display = "block"; // Munculkan Invoice
+      
+      // Scroll ke atas agar invoice terlihat
+      window.scrollTo(0, 0); 
+    }
+
+    // Helper: Format angka jadi Rupiah
+    function formatRupiah(angka) {
+      if (isNaN(angka)) return "Rp 0";
+      return "Rp " + angka.toLocaleString('id-ID');
+    }
+  </script>
+</head>
+<body onload="muatDataPesanan()" bgcolor="#f4f0e8" text="#5a4f42" link="#7a6b5a" vlink="#6b5e50" alink="#8a7a65">
+
+  <table width="100%" bgcolor="#e8e0d0" cellpadding="12" cellspacing="0" border="0">
+    <tr>
+      <td width="70%">
+        <font face="Arial" size="5" color="#5a4f42"><b>Running<font color="#8a7a65">Earth</font></b></font>
+      </td>
+      <td width="30%" align="right">
+        <font face="Arial" size="3">
+          <a href="index.html">Kembali ke Beranda</a>
+        </font>
+      </td>
+    </tr>
+  </table>
+
+  <marquee behavior="scroll" direction="left" bgcolor="#dfd6c6" height="30">
+    🔒 Transaksi Aman & Terpercaya. Stok Produk Terjamin.
+  </marquee>
+
+  <table width="100%" cellpadding="15" cellspacing="0" border="0">
+    <tr>
+      <td width="30%" valign="top" bgcolor="#e8e0d0" style="padding:15px;">
+        <font face="Arial" size="4" color="#5a4f42"><b>Ringkasan Pesanan</b></font>
+        <hr size="1" color="#8a7a65">
+        <font face="Arial" size="2">
+          <b>Produk:</b><br>
+          <span id="txtProduk">Loading...</span><br><br>
+          
+          <b>Ukuran:</b> <span id="txtSize">-</span><br>
+          <b>Jumlah:</b> <span id="txtQty">0</span><br><br>
+          
+          Harga Satuan: <span id="txtHarga">Rp 0</span><br>
+          Subtotal Barang: <b><span id="txtSubtotal">Rp 0</span></b><br>
+          Ongkos Kirim: <b>Rp 25.000</b><br>
+          <hr size="1" color="#8a7a65">
+          <font size="4"><b>Total: <span id="txtTotalBayar">Rp 0</span></b></font>
+        </font>
+      </td>
+
+      <td width="70%" valign="top" style="padding:15px;">
+        
+        <div id="areaForm">
+          <font face="Arial" size="5" color="#5a4f42"><b>Data Pengiriman</b></font><br><br>
+
+          <form onsubmit="event.preventDefault(); cetakInvoice();">
+            <table cellpadding="8" cellspacing="0" border="0" width="100%">
+              <tr>
+                <td width="30%"><font face="Arial" size="3">Nama Lengkap</font></td>
+                <td><input type="text" id="inputNama" size="40" required></td>
+              </tr>
+              <tr>
+                <td><font face="Arial" size="3">Email</font></td>
+                <td><input type="email" id="inputEmail" size="40" required></td>
+              </tr>
+              <tr>
+                <td><font face="Arial" size="3">No. Telepon</font></td>
+                <td><input type="tel" id="inputHp" size="40" required></td>
+              </tr>
+              <tr>
+                <td valign="top"><font face="Arial" size="3">Alamat Lengkap</font></td>
+                <td><textarea id="inputAlamat" rows="3" cols="42" required></textarea></td>
+              </tr>
+              <tr>
+                <td><font face="Arial" size="3">Kurir</font></td>
+                <td>
+                  <select id="inputKurir" required>
+                    <option value="JNE">JNE (Regular)</option>
+                    <option value="SiCepat">SiCepat (Best)</option>
+                    <option value="AnterAja">AnterAja</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td><font face="Arial" size="3">Pembayaran</font></td>
+                <td>
+                  <select id="inputBayar" required>
+                    <option value="Transfer BCA">Transfer BCA</option>
+                    <option value="Transfer Mandiri">Transfer Mandiri</option>
+                    <option value="GoPay">GoPay</option>
+                    <option value="ShopeePay">ShopeePay</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" style="padding-top:20px;">
+                  <button type="submit" style="background-color: #5a4f42; color: #f4f0e8; padding: 12px 25px; border: none; font-weight: bold; cursor: pointer; font-size:14px;">
+                    BAYAR SEKARANG ➔
+                  </button>
+                </td>
+              </tr>
+            </table>
+          </form>
+        </div>
+
+        <div id="areaInvoice" style="display: none;">
+          <font face="Arial" size="5" color="#5a4f42"><b>Bukti Transaksi</b></font><br><br>
+
+          <table width="95%" border="1" bordercolor="#5a4f42" cellpadding="10" cellspacing="0" bgcolor="#ffffff">
+            <tr bgcolor="#e8e0d0">
+              <td width="60%">
+                <font face="Arial" size="4" color="#5a4f42"><b>Running<font color="#8a7a65">Earth</font></b></font><br>
+                <font face="Arial" size="1">Official Store Invoice</font>
+              </td>
+              <td width="40%" align="right">
+                <font face="Arial" size="2">
+                  <b>LUNAS</b><br>
+                  <span id="strukNo">INV-000</span><br>
+                  <span id="strukTgl">01/01/2025</span>
+                </font>
+              </td>
+            </tr>
+
+            <tr>
+              <td colspan="2">
+                <table width="100%" border="0">
+                  <tr>
+                    <td valign="top" width="50%">
+                      <font face="Arial" size="2">
+                        <b>KEPADA:</b><br>
+                        <span id="strukNama">...</span><br>
+                        <span id="strukEmail">...</span><br>
+                        <span id="strukHp">...</span>
+                      </font>
+                    </td>
+                    <td valign="top" width="50%" align="right">
+                      <font face="Arial" size="2">
+                        <b>PENGIRIMAN:</b><br>
+                        <span id="strukAlamat">...</span><br>
+                        Via: <span id="strukKurir">...</span><br>
+                        Bayar: <span id="strukBayar">...</span>
+                      </font>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr bgcolor="#f4f0e8">
+              <td><font face="Arial" size="2"><b>Deskripsi Item</b></font></td>
+              <td align="right"><font face="Arial" size="2"><b>Total</b></font></td>
+            </tr>
+            <tr>
+              <td>
+                <font face="Arial" size="2">
+                  <b id="invProduk">Nama Produk</b><br>
+                  <font color="#8a7a65" size="1">
+                    <span id="invSize">Size -</span> | Qty: <span id="invQty">0</span> x <span id="invHargaSatuan">Rp 0</span>
+                  </font>
+                </font>
+              </td>
+              <td align="right" valign="top">
+                <font face="Arial" size="2" id="invTotalItem">Rp 0</font>
+              </td>
+            </tr>
+            <tr>
+              <td><font face="Arial" size="2">Biaya Ongkos Kirim</font></td>
+              <td align="right"><font face="Arial" size="2" id="invOngkir">Rp 25.000</font></td>
+            </tr>
+
+            <tr bgcolor="#5a4f42">
+              <td><font face="Arial" size="3" color="#f4f0e8"><b>TOTAL PEMBAYARAN</b></font></td>
+              <td align="right"><font face="Arial" size="3" color="#f4f0e8"><b id="invTotalFinal">Rp 0</b></font></td>
+            </tr>
+          </table>
+
+          <br>
+          <div align="center">
+            <button onclick="window.print()" style="background-color: #8a7a65; color: #ffffff; padding: 10px 20px; border: none; cursor: pointer;">
+              🖨️ Cetak / Simpan PDF
+            </button>
+            &nbsp;
+            <button onclick="window.location.href='index.html'" style="background-color: #dfd6c6; color: #5a4f42; padding: 10px 20px; border: none; cursor: pointer;">
+              🛍️ Belanja Lagi
+            </button>
+          </div>
+
+        </div>
+
+      </td>
+    </tr>
+  </table>
+
+  <table width="100%" bgcolor="#dfd6c6" cellpadding="10" cellspacing="0" border="0">
+    <tr>
+      <td align="center">
+        <font face="Arial" size="2" color="#5a4f42">
+          &copy; 2025 RunningEarth.
+        </font>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
